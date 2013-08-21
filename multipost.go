@@ -108,7 +108,9 @@ func getInput() ([]byte, error) {
 func main() {
 	flag.Parse()
 
-	time.AfterFunc(*timeLimit, func() { os.Exit(1) })
+	time.AfterFunc(*timeLimit, func() {
+		log.Fatalf("Reached absolute time limit")
+	})
 
 	input, err := getInput()
 	if err != nil {
