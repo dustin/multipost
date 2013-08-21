@@ -19,6 +19,8 @@ var backoff = flag.Duration("retrytime", 30*time.Second,
 	"How long to wait between retries")
 var fromFile = flag.String("input", "-", "File from which to read body")
 var paramName = flag.String("param", "payload", "Parameter name")
+var timeLimit = flag.Duration("timeLimit", 15*time.Minute,
+	"The maximum amount of time this process may run")
 
 var headerProto = http.Header{}
 
@@ -105,6 +107,8 @@ func getInput() ([]byte, error) {
 
 func main() {
 	flag.Parse()
+
+	time.AfterFunc(*timeLimit, func() { os.Exit(1) })
 
 	input, err := getInput()
 	if err != nil {
