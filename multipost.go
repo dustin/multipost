@@ -11,6 +11,8 @@ import (
 	"net/url"
 	"os"
 	"time"
+
+	"github.com/dustin/httputil"
 )
 
 var (
@@ -61,7 +63,7 @@ func process(u string, in []byte, ch chan result) {
 		if err == nil {
 			res.Body.Close()
 			if res.StatusCode < 200 || res.StatusCode >= 300 {
-				err = fmt.Errorf("http error: %v", res.Status)
+				err = httputil.HTTPError(res)
 			}
 		}
 		if err != nil {
