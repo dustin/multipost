@@ -13,21 +13,22 @@ import (
 	"time"
 )
 
-var verbose = flag.Bool("v", false, "log more stuff")
-var retries = flag.Int("retries", 3, "how many times to retry each post")
-var backoff = flag.Duration("retrytime", 30*time.Second,
-	"How long to wait between retries")
-var fromFile = flag.String("input", "-", "File from which to read body")
-var paramName = flag.String("param", "payload", "Parameter name")
-var timeLimit = flag.Duration("timeLimit", 15*time.Minute,
-	"The maximum amount of time this process may run")
+var (
+	verbose = flag.Bool("v", false, "log more stuff")
+	retries = flag.Int("retries", 3, "how many times to retry each post")
+	backoff = flag.Duration("retrytime", 30*time.Second,
+		"How long to wait between retries")
+	fromFile  = flag.String("input", "-", "File from which to read body")
+	paramName = flag.String("param", "payload", "Parameter name")
+	timeLimit = flag.Duration("timeLimit", 15*time.Minute,
+		"The maximum amount of time this process may run")
 
-var headerProto = http.Header{}
+	headerProto = http.Header{}
+)
 
 func init() {
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: %v [flags] url...\n",
-			os.Args[0])
+		fmt.Fprintf(os.Stderr, "Usage: %v [flags] url…\n", os.Args[0])
 		flag.PrintDefaults()
 		os.Exit(64)
 	}
@@ -76,8 +77,6 @@ func process(u string, in []byte, ch chan result) {
 }
 
 func getInput() ([]byte, error) {
-	var input []byte
-
 	var f io.Reader
 	if *fromFile == "-" {
 		f = os.Stdin
@@ -90,8 +89,7 @@ func getInput() ([]byte, error) {
 		f = ff
 	}
 
-	var err error
-	input, err = ioutil.ReadAll(f)
+	input, err := ioutil.ReadAll(f)
 	if err != nil {
 		return input, err
 	}
